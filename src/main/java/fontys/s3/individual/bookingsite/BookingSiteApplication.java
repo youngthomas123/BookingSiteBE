@@ -6,6 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class BookingSiteApplication {
 
+    //test
+
     public static void main(String[] args) {
         SpringApplication.run(BookingSiteApplication.class, args);
     }
