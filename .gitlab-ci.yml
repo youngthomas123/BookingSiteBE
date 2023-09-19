@@ -12,11 +12,9 @@ stages:
 build:
   stage: build
   script:
-    - cd BookingSite
     - gradle assemble
 
 test:
   stage: test
   script:
-    - cd BookingSite
     - gradle test
