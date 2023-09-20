@@ -17,7 +17,7 @@ public class UserController
     private final GetAllUsersUseCase getAllUsersUseCase;
 
     @GetMapping
-    public ResponseEntity<GetAllUsersResponse> getCountries()
+    public ResponseEntity<GetAllUsersResponse> getUsers()
     {
         return ResponseEntity.ok(getAllUsersUseCase.getAllUsers());
 
