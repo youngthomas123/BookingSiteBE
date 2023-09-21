@@ -15,7 +15,7 @@ build:
     - echo "gradle version"
     - gradle --version
     - echo "gradlew version"
-    - gradlew --version
+    - ./gradlew --version
     - gradle assemble
 
 test:
