@@ -16,9 +16,11 @@ build:
     - gradle --version
     - echo "gradlew version"
     - ./gradlew --version
-    - gradle assemble
+#    - gradle assemble
+    - ./gradlew assemble
 
 test:
   stage: test
   script:
-    - gradle test
+#    - gradle test
+    - ./gradlew test
