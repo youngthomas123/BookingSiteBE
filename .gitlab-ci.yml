@@ -12,15 +12,9 @@ stages:
 build:
   stage: build
   script:
-    - echo "gradle version"
-    - gradle --version
-    - echo "gradlew version"
-    - ./gradlew --version
-#    - gradle assemble
     - ./gradlew assemble
 
 test:
   stage: test
   script:
-#    - gradle test
     - ./gradlew test
