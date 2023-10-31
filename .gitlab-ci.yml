@@ -23,4 +23,4 @@ test:
 sonarqube:
   stage : sonarqube
   script:
-    - ./gradlew sonarqube -Dsonar.login=squ_df2ca123b1727f0f049a57dd39aeb3103f77ac6c
+    - ./gradlew sonarqube
