@@ -20,6 +20,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/users")
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173/")
 public class UserController
 {
     private final GetAllUsersUseCase getAllUsersUseCase;
@@ -32,6 +33,7 @@ public class UserController
         return ResponseEntity.ok(getAllUsersUseCase.getAllUsers());
 
     }
+
 
     @GetMapping("{id}")
     public ResponseEntity<User> getUser(@PathVariable(value = "id") final long id) {
