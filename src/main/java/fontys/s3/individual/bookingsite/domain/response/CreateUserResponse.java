@@ -1,4 +1,4 @@
-package fontys.s3.individual.bookingsite.domain.response.UserResponse;
+package fontys.s3.individual.bookingsite.domain.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

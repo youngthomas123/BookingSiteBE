@@ -1,14 +1,13 @@
 package fontys.s3.individual.bookingsite.controller;
 
-import fontys.s3.individual.bookingsite.business.UserUseCase.CreateUserUseCase;
-import fontys.s3.individual.bookingsite.business.UserUseCase.GetAllUsersUseCase;
-import fontys.s3.individual.bookingsite.business.UserUseCase.GetUserByIdUseCase;
-import fontys.s3.individual.bookingsite.business.UserUseCaseImp.CreateUserUseCaseImp;
-import fontys.s3.individual.bookingsite.domain.model.User;
-import fontys.s3.individual.bookingsite.domain.request.UserRequest.CreateUserRequest;
-import fontys.s3.individual.bookingsite.domain.response.UserResponse.CreateUserResponse;
-import fontys.s3.individual.bookingsite.domain.response.UserResponse.GetAllUsersResponse;
-import fontys.s3.individual.bookingsite.persistence.UserRepository;
+import fontys.s3.individual.bookingsite.business.useCase.CreateUserUseCase;
+import fontys.s3.individual.bookingsite.business.useCase.GetAllUsersUseCase;
+import fontys.s3.individual.bookingsite.business.useCase.GetUserByIdUseCase;
+import fontys.s3.individual.bookingsite.domain.dto.UserDetailsDTO;
+import fontys.s3.individual.bookingsite.domain.dto.UserSignUpDTO;
+import fontys.s3.individual.bookingsite.domain.request.CreateUserRequest;
+import fontys.s3.individual.bookingsite.domain.response.CreateUserResponse;
+import fontys.s3.individual.bookingsite.domain.response.GetAllUsersResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,8 +35,9 @@ public class UserController
 
 
     @GetMapping("{id}")
-    public ResponseEntity<User> getUser(@PathVariable(value = "id") final long id) {
-        final Optional<User> userOptional = getUserByIdUseCase.getUserById(id);
+    public ResponseEntity<UserDetailsDTO> getUser(@PathVariable(value = "id") final long id)
+    {
+         Optional<UserDetailsDTO> userOptional = getUserByIdUseCase.getUserById(id);
         if (userOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -46,7 +46,7 @@ public class UserController
 
     @PostMapping()
     public ResponseEntity<CreateUserResponse> createUser(@RequestBody @Valid CreateUserRequest request) {
-        CreateUserResponse response = createUserUseCase.createUser(request);
+        CreateUserResponse response = createUserUseCase.createGenericUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

@@ -1,4 +1,4 @@
-package fontys.s3.individual.bookingsite.domain.request.UserRequest;
+package fontys.s3.individual.bookingsite.domain.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -14,10 +14,9 @@ public class CreateUserRequest
 {
     @NotBlank
     private String username;
+
     @NotBlank
     private String password;
-    @NotBlank
-    private String email;
 
 
 }

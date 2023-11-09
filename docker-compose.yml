@@ -3,13 +3,14 @@ services:
     image: mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: 'rootPassword123'
+      MYSQL_DATABASE: 'bookingsite'
+      MYSQL_USER: 'springuser'
+      MYSQL_PASSWORD: 'password'
     ports:
-      - "3306:3306"
-  phpMyAdmin:
-    image: phpmyadmin
-    environment:
-      PMA_ARBITRARY: 1
-    ports:
-      - "8082:80"
+      - '3307:3306'
+    volumes:
+      - mysqlContainerVolume:/var/lib/mysql  # Define the volume here
 
+volumes:
+  mysqlContainerVolume:  # Define the volume with its name here
