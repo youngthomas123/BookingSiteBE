@@ -19,8 +19,12 @@ test:
   stage: test
   script:
     - ./gradlew test
+  dependencies:
+    - build  # Ensure 'test' runs after 'build'
 
 sonarqube:
-  stage : sonarqube
+  stage: sonarqube
   script:
-    - ./gradlew sonar
+    - ./gradlew sonarqube
+  dependencies:
+    - build  # Ensure 'sonarqube' runs after 'build'
