@@ -35,6 +35,7 @@ class GetAllUsersUseCaseImpTest
                 .type("tenant")
                 .build();
         UserEntity user2 = UserEntity.builder()
+                .id(2L)
                 .username("user2")
                 .password("password2")
                 .type("landlord")
