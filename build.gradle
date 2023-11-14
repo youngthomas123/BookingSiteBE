@@ -44,6 +44,7 @@ sonar {
         property "sonar.projectKey", "myProjectKey"
         property "sonar.host.url", "http://localhost:9000"
         property "sonar.token", "squ_258f2bfe1de25697ab462b0f7bc72e911a7b7a16"
+        property "sonar.java.binaries", "build/classes/java/main"
 
     }
 }
