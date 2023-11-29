@@ -25,13 +25,4 @@ public interface PropertyRepository extends JpaRepository<PropertyEntity,Long>
 
 
 
-
-
-    //a method to get total number of filtered properties
-    @Query(value = "SELECT count(*) as count FROM property WHERE id NOT IN (SELECT property_id FROM booking WHERE " +
-            "(check_in <= :checkin AND check_out >= :checkout) " +
-            "OR (check_in BETWEEN :checkin AND :checkout) " +
-            "OR (check_out BETWEEN :checkin AND :checkout)) " +
-            "AND location LIKE %:location%", nativeQuery = true)
-    int getTotalCountOfFilteredProperties(String location,String checkin, String checkout);
 }

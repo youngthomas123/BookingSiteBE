@@ -30,10 +30,8 @@ public class GetPaginatedPropertiesUseCaseImp implements GetPaginatedPropertiesU
 
 
     @Override
-    public Optional<GetPaginatedPropertiesResponse> getPaginatedProperties(GetPaginatedPropertiesRequest request)
+    public GetPaginatedPropertiesResponse getPaginatedProperties(GetPaginatedPropertiesRequest request)
     {
-//        int totalCount = propertyRepository.getTotalCountOfFilteredProperties(
-//                request.getLocation(), request.getCheckIn(), request.getCheckOut());
 
         PageRequest pageRequest = PageRequest.of(request.getCurrentPage(), request.getPageSize());
 
@@ -66,7 +64,7 @@ public class GetPaginatedPropertiesUseCaseImp implements GetPaginatedPropertiesU
                 .totalCount(propertyEntities.getTotalElements())
                 .Properties(propertyDTOs)
                 .build();
-        return Optional.of(response);
+        return response;
     }
 
 }

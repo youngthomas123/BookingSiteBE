@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface GetPaginatedPropertiesUseCase
 {
-    Optional<GetPaginatedPropertiesResponse>getPaginatedProperties(GetPaginatedPropertiesRequest request);
+    GetPaginatedPropertiesResponse getPaginatedProperties(GetPaginatedPropertiesRequest request);
 }

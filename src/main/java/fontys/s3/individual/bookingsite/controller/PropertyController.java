@@ -19,7 +19,7 @@ public class PropertyController
 
     @GetMapping
     public ResponseEntity<GetPaginatedPropertiesResponse> getPaginatedProperties(
-            @RequestParam String location,
+            @RequestParam  String location,
             @RequestParam String checkIn,
             @RequestParam String checkOut,
             @RequestParam int page,
@@ -33,8 +33,8 @@ public class PropertyController
                 .pageSize(size)
                 .build();
 
-        Optional<GetPaginatedPropertiesResponse> response = getPaginatedPropertiesUseCase.getPaginatedProperties(request);
+        GetPaginatedPropertiesResponse response = getPaginatedPropertiesUseCase.getPaginatedProperties(request);
 
-        return response.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok().body(response);
     }
 }
