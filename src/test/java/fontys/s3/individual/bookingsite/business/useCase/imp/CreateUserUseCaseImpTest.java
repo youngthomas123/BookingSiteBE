@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -21,15 +22,21 @@ class CreateUserUseCaseImpTest
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private CreateUserUseCaseImp createUserUseCase;
 
+
+
     @Test
-    public void CreateGenericUser_ValidData_Success() {
+    public void CreateUser_ValidData_Success() {
 
         CreateUserRequest request = CreateUserRequest.builder()
                 .username("testuser")
                 .password("password")
+                .type("tenant")
                 .build();
         UserEntity savedUser = UserEntity.builder().build();
         savedUser.setId(1L);
@@ -37,10 +44,12 @@ class CreateUserUseCaseImpTest
 
         when(userRepository.existsByUsername("testuser")).thenReturn(false);
 
+        when(passwordEncoder.encode(request.getPassword())).thenReturn("$2a$12$6JY34K3328GqJ5ZE6pNiru1cpZ/WnUQIQq1Ig0CSKDgv1V/pscNyG");
+
         when(userRepository.save(any(UserEntity.class))).thenReturn(savedUser);
 
 
-        CreateUserResponse response = createUserUseCase.createGenericUser(request);
+        CreateUserResponse response = createUserUseCase.createUser(request);
 
 
         assertNotNull(response);
@@ -53,19 +62,23 @@ class CreateUserUseCaseImpTest
     }
 
     @Test
-    public void CreateGenericUser_UserNameExists_ThrowsException() {
+    public void CreateUser_UserNameExists_ThrowsException() {
 
-        CreateUserRequest request = new CreateUserRequest("existinguser", "password");
+        CreateUserRequest request =  CreateUserRequest.builder()
+                .username("existinguser")
+                .password("password")
+                .type("tenant")
+                .build();
 
 
-        when(userRepository.existsByUsername("existinguser")).thenReturn(true);
+        when(userRepository.existsByUsername(request.getUsername())).thenReturn(true);
 
 
         assertThrows(UserNameAlreadyExistsException.class, () ->
-                createUserUseCase.createGenericUser(request));
+                createUserUseCase.createUser(request));
 
 
-        verify(userRepository, times(1)).existsByUsername("existinguser");
+        verify(userRepository, times(1)).existsByUsername(request.getUsername());
 
         verify(userRepository, never()).save(any(UserEntity.class));
     }

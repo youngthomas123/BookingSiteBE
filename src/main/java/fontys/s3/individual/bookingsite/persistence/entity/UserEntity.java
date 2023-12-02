@@ -14,7 +14,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "users")
 @Data
 @Builder
@@ -33,7 +32,6 @@ public class UserEntity
     private String username;
 
     @NotBlank
-    @Length(min = 2, max = 50)
     @Column(name = "password")
     private String password;
 
@@ -58,6 +56,7 @@ public class UserEntity
     private LocalDateTime dateCreated;
 
     @Column(name = "type")
+    @Length(max = 10)
     private String type;
 
 

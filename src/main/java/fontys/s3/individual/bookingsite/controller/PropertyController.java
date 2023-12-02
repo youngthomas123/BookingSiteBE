@@ -12,8 +12,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/properties")
 @AllArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173/")
-public class PropertyController
+//@CrossOrigin(origins = "http://localhost:5173/")
+public class  PropertyController
 {
     private final GetPaginatedPropertiesUseCase getPaginatedPropertiesUseCase;
 

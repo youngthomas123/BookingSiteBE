@@ -36,7 +36,7 @@ public class PropertyEntity
     @JoinColumn(name ="landlord_id")
     @ManyToOne
     @JsonIgnore
-    private LandLordEntity landLordEntity;
+    private UserEntity userEntity;
 
     private String mainPhoto;
 

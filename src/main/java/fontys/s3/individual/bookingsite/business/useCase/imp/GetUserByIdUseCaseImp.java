@@ -2,12 +2,7 @@ package fontys.s3.individual.bookingsite.business.useCase.imp;
 
 import fontys.s3.individual.bookingsite.business.useCase.GetUserByIdUseCase;
 import fontys.s3.individual.bookingsite.domain.dto.UserDetailsDTO;
-import fontys.s3.individual.bookingsite.domain.dto.UserSignUpDTO;
-import fontys.s3.individual.bookingsite.persistence.entity.LandLordEntity;
-import fontys.s3.individual.bookingsite.persistence.entity.TenantEntity;
 import fontys.s3.individual.bookingsite.persistence.entity.UserEntity;
-import fontys.s3.individual.bookingsite.persistence.repository.LandLordRepository;
-import fontys.s3.individual.bookingsite.persistence.repository.TenantRepository;
 import fontys.s3.individual.bookingsite.persistence.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

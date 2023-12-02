@@ -5,9 +5,14 @@ import fontys.s3.individual.bookingsite.domain.dto.PropertyHomePageDTO;
 import fontys.s3.individual.bookingsite.domain.request.GetPaginatedPropertiesRequest;
 import fontys.s3.individual.bookingsite.domain.response.GetPaginatedPropertiesResponse;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -20,7 +25,11 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(PropertyController.class)
+
+
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class PropertyControllerIntegrationTest
 {
     @Autowired
@@ -31,6 +40,7 @@ class PropertyControllerIntegrationTest
 
 
     @Test
+    @WithMockUser(username = "thomas", roles = {"tenant"})
     public void getPaginatedProperties_ValidRouteParams() throws Exception {
         // Mocked request parameters
         String location = "USA";
@@ -91,6 +101,7 @@ class PropertyControllerIntegrationTest
     }
 
     @Test
+    @WithMockUser(username = "thomas", roles = {"tenant"})
     public void getPaginatedProperties_MissingParams() throws Exception
     {
         // Mocked request parameters (missing page and size)

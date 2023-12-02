@@ -28,7 +28,7 @@ public class BookingEntity
 
     @JoinColumn(name = "tenant_id")
     @ManyToOne
-    private TenantEntity tenantEntity;
+    private UserEntity userEntity;
 
     @Column(name = "checkIn")
     @Temporal(TemporalType.DATE) // For java.sql.Date

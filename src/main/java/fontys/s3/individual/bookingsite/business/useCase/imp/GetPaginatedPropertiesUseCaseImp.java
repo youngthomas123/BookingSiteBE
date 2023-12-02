@@ -51,7 +51,7 @@ public class GetPaginatedPropertiesUseCaseImp implements GetPaginatedPropertiesU
                 .map(property -> PropertyHomePageDTO.builder()
                         .propertyId(property.getId())
                         .description(property.getDescription())
-                        .landlordId(property.getLandLordEntity().getId())
+                        .landlordId(property.getUserEntity().getId())
                         .priceForNight(property.getPricePerNight())
                         .name(property.getName())
                         .mainPhoto(property.getMainPhoto())

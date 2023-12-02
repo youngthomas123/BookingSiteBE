@@ -19,7 +19,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/users")
 @AllArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173/")
+//@CrossOrigin(origins = "http://localhost:5173/")
 public class UserController
 {
     private final GetAllUsersUseCase getAllUsersUseCase;
@@ -46,7 +46,7 @@ public class UserController
 
     @PostMapping()
     public ResponseEntity<CreateUserResponse> createUser(@RequestBody @Valid CreateUserRequest request) {
-        CreateUserResponse response = createUserUseCase.createGenericUser(request);
+        CreateUserResponse response = createUserUseCase.createUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
