@@ -1,5 +1,6 @@
 package fontys.s3.individual.bookingsite.controller;
 
+import fontys.s3.individual.bookingsite.business.exception.UnauthorizedDataAccessException;
 import fontys.s3.individual.bookingsite.business.useCase.GetPaginatedPropertiesUseCase;
 import fontys.s3.individual.bookingsite.domain.dto.PropertyHomePageDTO;
 import fontys.s3.individual.bookingsite.domain.request.GetPaginatedPropertiesRequest;
@@ -14,6 +15,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 
@@ -22,9 +25,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 
 @ExtendWith(SpringExtension.class)
@@ -41,7 +43,8 @@ class PropertyControllerIntegrationTest
 
     @Test
     @WithMockUser(username = "thomas", roles = {"tenant"})
-    public void getPaginatedProperties_ValidRouteParams() throws Exception {
+    public void getPaginatedProperties_ValidRouteParamsAndRole_ShouldReturnStatus200() throws Exception
+    {
         // Mocked request parameters
         String location = "USA";
         String checkIn = "2024-11-29";
@@ -95,8 +98,30 @@ class PropertyControllerIntegrationTest
                         .param("page", String.valueOf(page))
                         .param("size", String.valueOf(size)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.totalCount").value(response.getTotalCount()))
-                .andReturn();
+                .andExpect(header().string("Content-Type", APPLICATION_JSON_VALUE))
+                .andExpect(content().json("""
+                            {
+                                 "totalCount": 10,
+                                  "properties": [
+                                         {
+                                             "propertyId": 1,
+                                             "description": "description1",
+                                             "name": "name1",
+                                             "priceForNight": 21.0,
+                                             "landlordId": 1,
+                                             "mainPhoto": "https://t3.ftcdn.net/jpg/02/48/42/64/360_F_248426448_NVKLywWqArG2ADUxDq6QprtIzsF82dMF.jpg"
+                                         },
+                                         {
+                                             "propertyId": 2,
+                                             "description": "description2",
+                                             "name": "name2",
+                                             "priceForNight": 21.0,
+                                             "landlordId": 1,
+                                             "mainPhoto": "https://t3.ftcdn.net/jpg/02/48/42/64/360_F_248426448_NVKLywWqArG2ADUxDq6QprtIzsF82dMF.jpg"
+                                         }
+                                     ]
+                            }
+                        """));
 
     }
 
@@ -117,6 +142,33 @@ class PropertyControllerIntegrationTest
 
     }
 
-    // makes tests to handle invalid dates and when checkOut is before checkIn
+    @Test
+    @WithMockUser(username = "thomas", roles = {"landlord"})
+    public void getPaginatedProperties_HasValidRouteParamButInvalidRole_ThrowsException() throws Exception
+    {
+        // Mocked request parameters
+        String location = "USA";
+        String checkIn = "2024-11-29";
+        String checkOut = "2024-11-30";
+        int page = 0;
+        int size = 2;
+
+        GetPaginatedPropertiesRequest request = GetPaginatedPropertiesRequest.builder()
+                .location(location)
+                .checkIn(checkIn)
+                .checkOut(checkOut)
+                .currentPage(page)
+                .pageSize(size)
+                .build();
+
+        mockMvc.perform(get("/properties")
+                        .param("location", location)
+                        .param("checkIn", checkIn)
+                        .param("checkOut", checkOut)
+                        .param("page", String.valueOf(page))
+                        .param("size", String.valueOf(size)))
+                .andExpect(status().isForbidden()); // Check for 403 Forbidden status
+
+    }
 
 }

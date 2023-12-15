@@ -1,5 +1,9 @@
 package fontys.s3.individual.bookingsite.business.useCase.imp;
 
+import fontys.s3.individual.bookingsite.business.exception.InvalidDatesException;
+import fontys.s3.individual.bookingsite.business.exception.UnauthorizedDataAccessException;
+import fontys.s3.individual.bookingsite.business.util.DateValidator;
+import fontys.s3.individual.bookingsite.configuration.security.token.AccessToken;
 import fontys.s3.individual.bookingsite.domain.dto.PropertyHomePageDTO;
 import fontys.s3.individual.bookingsite.domain.request.GetPaginatedPropertiesRequest;
 import fontys.s3.individual.bookingsite.domain.response.GetPaginatedPropertiesResponse;
@@ -29,11 +33,17 @@ class GetPaginatedPropertiesUseCaseImpTest
     @Mock
     private PropertyRepository propertyRepository;
 
+    @Mock
+    private AccessToken requestAccessToken;
+
+    @Mock
+    private DateValidator dateValidator;
+
     @InjectMocks
     private GetPaginatedPropertiesUseCaseImp getPaginatedPropertiesUseCaseImp;
 
     @Test
-    public void getPaginatedProperties_WhenPropertiesFoundInDB_ReturnsResponseWithCountAndProperties()
+    public void getPaginatedProperties_HasValidRoleAndValidDates_ReturnsResponse()
     {
         // Arrange
         GetPaginatedPropertiesRequest request = GetPaginatedPropertiesRequest.builder()
@@ -122,10 +132,14 @@ class GetPaginatedPropertiesUseCaseImpTest
         propertyEntityList.add(property5);
         propertyEntityList.add(property6);
 
+
+
         Page<PropertyEntity> propertyEntities = new PageImpl<>(propertyEntityList);
 
         PageRequest pageRequest = PageRequest.of(request.getCurrentPage(), request.getPageSize());
 
+        when(dateValidator.areDatesValid(request.getCheckIn(), request.getCheckOut())).thenReturn(true);
+        when(requestAccessToken.hasRole("tenant")).thenReturn(true);
         when(propertyRepository.findPaginatedByLocationAndAvailability(request.getLocation(), request.getCheckIn(), request.getCheckOut(), pageRequest)).thenReturn(propertyEntities);
 
         // act
@@ -161,7 +175,29 @@ class GetPaginatedPropertiesUseCaseImpTest
     }
 
     @Test
-    public void getPaginatedProperties_WhenNoPropertiesFoundInDB_ReturnsResponseWithEmptyProperties()
+    public void getPaginatedProperties_HasValidRoleButInvalidDates_ThrowsException()
+    {
+        // Arrange
+        GetPaginatedPropertiesRequest request = GetPaginatedPropertiesRequest.builder()
+                .location("USA")
+                .checkIn("2023-11-29")
+                .checkOut("2023-11-12")
+                .pageSize(6)
+                .currentPage(0)
+                .build();
+
+        when(dateValidator.areDatesValid(request.getCheckIn(), request.getCheckOut())).thenReturn(false);
+        when(requestAccessToken.hasRole("tenant")).thenReturn(true);
+
+        InvalidDatesException exception = assertThrows(InvalidDatesException.class, () -> {
+            getPaginatedPropertiesUseCaseImp.getPaginatedProperties(request); // This should throw the exception
+        });
+
+    }
+
+
+    @Test
+    public void getPaginatedProperties_HasInvalidRole_ThrowsException()
     {
         //arrange
         GetPaginatedPropertiesRequest request = GetPaginatedPropertiesRequest.builder()
@@ -172,27 +208,13 @@ class GetPaginatedPropertiesUseCaseImpTest
                 .currentPage(0)
                 .build();
 
-        List<PropertyEntity> propertyEntityList = new ArrayList<>();
-
-        Page<PropertyEntity> propertyEntities = new PageImpl<>(propertyEntityList);
-        PageRequest pageRequest = PageRequest.of(request.getCurrentPage(), request.getPageSize());
-        when(propertyRepository.findPaginatedByLocationAndAvailability(request.getLocation(), request.getCheckIn(), request.getCheckOut(), pageRequest)).thenReturn(propertyEntities);
-
-        // act
-        GetPaginatedPropertiesResponse actualResponse = getPaginatedPropertiesUseCaseImp.getPaginatedProperties(request);
-
-        //assert
-        List<PropertyHomePageDTO> propertyHomePageDTOS = new ArrayList<>();
-
-        GetPaginatedPropertiesResponse expectedResponse = GetPaginatedPropertiesResponse.builder()
-                .totalCount(0L)
-                .Properties(propertyHomePageDTOS)
-                .build();
-
-        assertNotNull(actualResponse);
+        //act and assert
+        when(requestAccessToken.hasRole("tenant")).thenReturn(false);
+        UnauthorizedDataAccessException exception = assertThrows(UnauthorizedDataAccessException.class, () -> {
+            getPaginatedPropertiesUseCaseImp.getPaginatedProperties(request); // This should throw the exception
+        });
 
 
-        assertEquals(expectedResponse, actualResponse);
 
 
     }

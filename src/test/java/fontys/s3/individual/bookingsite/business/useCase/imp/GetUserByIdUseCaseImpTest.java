@@ -1,8 +1,11 @@
 package fontys.s3.individual.bookingsite.business.useCase.imp;
 
+import fontys.s3.individual.bookingsite.business.exception.UnauthorizedDataAccessException;
+import fontys.s3.individual.bookingsite.configuration.security.token.AccessToken;
 import fontys.s3.individual.bookingsite.domain.dto.UserDetailsDTO;
 import fontys.s3.individual.bookingsite.persistence.entity.UserEntity;
 import fontys.s3.individual.bookingsite.persistence.repository.UserRepository;
+import jakarta.persistence.Access;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,11 +24,15 @@ class GetUserByIdUseCaseImpTest
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private AccessToken requestAccessToken;
+
     @InjectMocks
     private GetUserByIdUseCaseImp getUserByIdUseCase;
 
     @Test
-    public void testGetUserById_UserExists() {
+    public void getUserById_UserIdMatchesAndUserIsPresentInDB_OptionalOfUserDetailsDTO()
+    {
 
         long userId = 1L;
         UserEntity userEntity = UserEntity.builder()
@@ -34,6 +41,7 @@ class GetUserByIdUseCaseImpTest
                 .password("password")
                 .type("landlord")
                 .build();
+        when(requestAccessToken.getUserId()).thenReturn(userId);
         when(userRepository.findById(userId)).thenReturn(Optional.of(userEntity));
 
 
@@ -50,9 +58,11 @@ class GetUserByIdUseCaseImpTest
     }
 
     @Test
-    public void testGetUserById_UserDoesNotExist() {
+    public void getUserById_UserIdMatchesButUserHasBeenDeletedFromDB_ReturnsEmptyOptional()
+    {
 
         long userId = 2L;
+        when(requestAccessToken.getUserId()).thenReturn(userId);
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
 
@@ -64,5 +74,18 @@ class GetUserByIdUseCaseImpTest
 
         verify(userRepository, times(1)).findById(userId);
     }
+
+    @Test
+    public void getUserById_UserIdsDontMatch_ThrowsException()
+    {
+        long userId = 3L;
+
+        when(requestAccessToken.getUserId()).thenReturn(4L);
+
+        UnauthorizedDataAccessException exception = assertThrows(UnauthorizedDataAccessException.class, () -> {
+            getUserByIdUseCase.getUserById(userId); // This should throw the exception
+        });
+    }
+
 
 }

@@ -1,6 +1,8 @@
 package fontys.s3.individual.bookingsite.business.useCase.imp;
 
+import fontys.s3.individual.bookingsite.business.exception.UnauthorizedDataAccessException;
 import fontys.s3.individual.bookingsite.business.useCase.GetUserByIdUseCase;
+import fontys.s3.individual.bookingsite.configuration.security.token.AccessToken;
 import fontys.s3.individual.bookingsite.domain.dto.UserDetailsDTO;
 import fontys.s3.individual.bookingsite.persistence.entity.UserEntity;
 import fontys.s3.individual.bookingsite.persistence.repository.UserRepository;
@@ -11,35 +13,46 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class GetUserByIdUseCaseImp implements GetUserByIdUseCase
-{
+public class GetUserByIdUseCaseImp implements GetUserByIdUseCase {
     private UserRepository userRepository;
+    private AccessToken requestAccessToken;
+
 
     @Override
-    public Optional<UserDetailsDTO> getUserById(long userId)
+    public Optional<UserDetailsDTO> getUserById(long userId) //all roles should be able to access
     {
-
-        Optional<UserEntity> userEntity = userRepository.findById(userId);
-
-        if (userEntity.isPresent() )
+        if (requestAccessToken.getUserId() == userId)
         {
-            UserEntity user = userEntity.get();  // Get the actual UserEntity object
+            Optional<UserEntity> userEntity = userRepository.findById(userId);
 
-            UserDetailsDTO userDetailsDTO = UserDetailsDTO.builder()
-                    .username(user.getUsername())
-                    .id(user.getId())
-                    .dateCreated(user.getDateCreated())
-                    .type(user.getType())
-                    .build();
+            if (userEntity.isPresent())
+            {
+                UserEntity user = userEntity.get();  // Get the actual UserEntity object
 
-            return Optional.of(userDetailsDTO);
+                UserDetailsDTO userDetailsDTO = UserDetailsDTO.builder()
+                        .username(user.getUsername())
+                        .dateCreated(user.getDateCreated())
+                        .type(user.getType())
+                        .email(user.getEmail())
+                        .bio(user.getBio())
+                        .phoneNumber(user.getPhoneNumber())
+                        .build();
 
+                return Optional.of(userDetailsDTO);
+
+            }
+            else
+            {
+                return Optional.empty(); // User not found, return an empty Optional
+            }
         }
-        else{
-            return Optional.empty(); // User not found, return an empty Optional
+        else
+        {
+            throw new UnauthorizedDataAccessException("User id not equal to route parameter id");
         }
+
+
     }
-
 
 
 }

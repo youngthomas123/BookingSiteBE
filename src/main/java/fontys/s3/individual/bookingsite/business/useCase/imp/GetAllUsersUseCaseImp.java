@@ -1,6 +1,8 @@
 package fontys.s3.individual.bookingsite.business.useCase.imp;
 
+import fontys.s3.individual.bookingsite.business.exception.UnauthorizedDataAccessException;
 import fontys.s3.individual.bookingsite.business.useCase.GetAllUsersUseCase;
+import fontys.s3.individual.bookingsite.configuration.security.token.AccessToken;
 import fontys.s3.individual.bookingsite.domain.dto.UserDetailsDTO;
 import fontys.s3.individual.bookingsite.domain.response.GetAllUsersResponse;
 import fontys.s3.individual.bookingsite.persistence.entity.UserEntity;
@@ -17,26 +19,34 @@ import java.util.stream.Collectors;
 public class GetAllUsersUseCaseImp implements GetAllUsersUseCase
 {
    private UserRepository userRepository;
+    private AccessToken requestAccessToken;
     @Override
     public GetAllUsersResponse getAllUsers()
     {
+        if(requestAccessToken.hasRole("admin"))
+        {
+            List<UserEntity> users = userRepository.findAll();
 
-        List<UserEntity> users = userRepository.findAll();
+            List<UserDetailsDTO> userDtos = users.stream()
+                    .map(user -> UserDetailsDTO.builder()
+                            .username(user.getUsername())
+                            .dateCreated(user.getDateCreated())
+                            .type(user.getType())
+                            .build())
+                    .collect(Collectors.toList());
 
-        List<UserDetailsDTO> userDtos = users.stream()
-                .map(user -> UserDetailsDTO.builder()
-                        .username(user.getUsername())
-                        .id(user.getId())
-                        .dateCreated(user.getDateCreated())
-                        .type(user.getType())
-                        .build())
-                .collect(Collectors.toList());
+            GetAllUsersResponse response = GetAllUsersResponse.builder()
+                    .users(userDtos)
+                    .build();
 
-        GetAllUsersResponse response = GetAllUsersResponse.builder()
-                .users(userDtos)
-                .build();
+            return response;
+        }
+        else
+        {
+            throw new UnauthorizedDataAccessException("Invalid user role");
+        }
 
-        return response;
+
 
     }
 }

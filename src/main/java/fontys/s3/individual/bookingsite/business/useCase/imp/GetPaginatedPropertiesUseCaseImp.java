@@ -1,6 +1,10 @@
 package fontys.s3.individual.bookingsite.business.useCase.imp;
 
+import fontys.s3.individual.bookingsite.business.exception.InvalidDatesException;
+import fontys.s3.individual.bookingsite.business.exception.UnauthorizedDataAccessException;
 import fontys.s3.individual.bookingsite.business.useCase.GetPaginatedPropertiesUseCase;
+import fontys.s3.individual.bookingsite.business.util.DateValidator;
+import fontys.s3.individual.bookingsite.configuration.security.token.AccessToken;
 import fontys.s3.individual.bookingsite.domain.dto.PropertyHomePageDTO;
 import fontys.s3.individual.bookingsite.domain.dto.UserDetailsDTO;
 import fontys.s3.individual.bookingsite.domain.request.GetPaginatedPropertiesRequest;
@@ -27,44 +31,57 @@ public class GetPaginatedPropertiesUseCaseImp implements GetPaginatedPropertiesU
 {
 
     private final PropertyRepository propertyRepository;
+    private AccessToken requestAccessToken;
+    private DateValidator dateValidator;
 
 
     @Override
     public GetPaginatedPropertiesResponse getPaginatedProperties(GetPaginatedPropertiesRequest request)
     {
+        if(requestAccessToken.hasRole("tenant"))
+        {
+            // check if dates are valid
+            if(dateValidator.areDatesValid(request.getCheckIn(), request.getCheckOut()))
+            {
+                PageRequest pageRequest = PageRequest.of(request.getCurrentPage(), request.getPageSize());
 
-        PageRequest pageRequest = PageRequest.of(request.getCurrentPage(), request.getPageSize());
+                Page<PropertyEntity> propertyEntities = propertyRepository.findPaginatedByLocationAndAvailability(
+                        request.getLocation(), request.getCheckIn(), request.getCheckOut(), pageRequest);
 
-        Page<PropertyEntity> propertyEntities = propertyRepository.findPaginatedByLocationAndAvailability(
-                request.getLocation(), request.getCheckIn(), request.getCheckOut(), pageRequest);
+                // Convert Page<> to List<>
+                List<PropertyEntity> propertiesList = propertyEntities.getContent();
 
-
-
-        // Convert Page<> to List<>
-        List<PropertyEntity> propertiesList = propertyEntities.getContent();
-
-        // create dtos
-
-
-
-        List<PropertyHomePageDTO> propertyDTOs = propertiesList.stream()
-                .map(property -> PropertyHomePageDTO.builder()
-                        .propertyId(property.getId())
-                        .description(property.getDescription())
-                        .landlordId(property.getUserEntity().getId())
-                        .priceForNight(property.getPricePerNight())
-                        .name(property.getName())
-                        .mainPhoto(property.getMainPhoto())
-                        .build())
-                .collect(Collectors.toList());
-
+                // create dtos
+                List<PropertyHomePageDTO> propertyDTOs = propertiesList.stream()
+                        .map(property -> PropertyHomePageDTO.builder()
+                                .propertyId(property.getId())
+                                .description(property.getDescription())
+                                .landlordId(property.getUserEntity().getId())
+                                .priceForNight(property.getPricePerNight())
+                                .name(property.getName())
+                                .mainPhoto(property.getMainPhoto())
+                                .build())
+                        .collect(Collectors.toList());
 
 
-        GetPaginatedPropertiesResponse response = GetPaginatedPropertiesResponse.builder()
-                .totalCount(propertyEntities.getTotalElements())
-                .Properties(propertyDTOs)
-                .build();
-        return response;
+
+                GetPaginatedPropertiesResponse response = GetPaginatedPropertiesResponse.builder()
+                        .totalCount(propertyEntities.getTotalElements())
+                        .Properties(propertyDTOs)
+                        .build();
+                return response;
+            }
+            else
+            {
+                throw new InvalidDatesException();
+            }
+        }
+        else
+        {
+           throw new UnauthorizedDataAccessException("Invalid user role");
+        }
+
+
     }
 
 }

@@ -38,15 +38,21 @@ class CreateUserUseCaseImpTest
                 .password("password")
                 .type("tenant")
                 .build();
-        UserEntity savedUser = UserEntity.builder().build();
-        savedUser.setId(1L);
+
+        UserEntity user = UserEntity.builder()
+                .id(1L)
+                .username(request.getUsername())
+                .password(request.getPassword())
+                .type(request.getType())
+                .build();
 
 
-        when(userRepository.existsByUsername("testuser")).thenReturn(false);
+
+        when(userRepository.existsByUsername(request.getUsername())).thenReturn(false);
 
         when(passwordEncoder.encode(request.getPassword())).thenReturn("$2a$12$6JY34K3328GqJ5ZE6pNiru1cpZ/WnUQIQq1Ig0CSKDgv1V/pscNyG");
 
-        when(userRepository.save(any(UserEntity.class))).thenReturn(savedUser);
+        when(userRepository.save(any(UserEntity.class))).thenReturn(user);
 
 
         CreateUserResponse response = createUserUseCase.createUser(request);
@@ -62,7 +68,8 @@ class CreateUserUseCaseImpTest
     }
 
     @Test
-    public void CreateUser_UserNameExists_ThrowsException() {
+    public void CreateUser_UserNameExists_ThrowsException()
+    {
 
         CreateUserRequest request =  CreateUserRequest.builder()
                 .username("existinguser")

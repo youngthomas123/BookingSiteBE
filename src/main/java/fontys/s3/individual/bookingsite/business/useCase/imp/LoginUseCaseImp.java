@@ -28,16 +28,19 @@ public class LoginUseCaseImp implements LoginUseCase
     public LoginResponse login(LoginRequest loginRequest)
     {
         UserEntity user = userRepository.findByUsername(loginRequest.getUsername());
-        if (user == null) {
+        if (user == null)
+        {
             throw new InvalidCredentialsException();
         }
 
-        if (!matchesPassword(loginRequest.getPassword(), user.getPassword())) {
+        if (!matchesPassword(loginRequest.getPassword(), user.getPassword()))
+        {
             throw new InvalidCredentialsException();
         }
 
         String accessToken = generateAccessToken(user);
-        return LoginResponse.builder().accessToken(accessToken).build();
+        return LoginResponse.builder()
+                .accessToken(accessToken).build();
     }
 
     private boolean matchesPassword(String rawPassword, String encodedPassword) {
@@ -45,7 +48,8 @@ public class LoginUseCaseImp implements LoginUseCase
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
-    private String generateAccessToken(UserEntity user) {
+    private String generateAccessToken(UserEntity user)
+    {
 
 
         List<String>roles = new ArrayList<>();

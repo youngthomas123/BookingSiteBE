@@ -1,5 +1,7 @@
 package fontys.s3.individual.bookingsite.business.useCase.imp;
 
+import fontys.s3.individual.bookingsite.business.exception.UnauthorizedDataAccessException;
+import fontys.s3.individual.bookingsite.configuration.security.token.AccessToken;
 import fontys.s3.individual.bookingsite.domain.response.GetAllUsersResponse;
 import fontys.s3.individual.bookingsite.persistence.entity.UserEntity;
 import fontys.s3.individual.bookingsite.persistence.repository.UserRepository;
@@ -22,11 +24,16 @@ class GetAllUsersUseCaseImpTest
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private AccessToken requestAccessToken;
+
     @InjectMocks
     private GetAllUsersUseCaseImp getAllUsersUseCase;
 
     @Test
-    public void GetAllUsers_ReturnsResponseWithAllUsers() {
+    public void GetAllUsers_HasValidRole_ReturnsResponse()
+    {
+        //arrange
 
         UserEntity user1 = UserEntity.builder()
                 .id(1L)
@@ -40,38 +47,33 @@ class GetAllUsersUseCaseImpTest
                 .password("password2")
                 .type("landlord")
                 .build();
+
         List<UserEntity> mockUsers = Arrays.asList(user1, user2);
 
-
+        // act
+        when(requestAccessToken.hasRole("admin")).thenReturn(true);
         when(userRepository.findAll()).thenReturn(mockUsers);
-
-
         GetAllUsersResponse response = getAllUsersUseCase.getAllUsers();
 
-
+        //assert
         assertNotNull(response);
         assertEquals(2, response.getUsers().size());
-
-
-
-
         verify(userRepository, times(1)).findAll();
     }
 
     @Test
-    public void GetAllUsers_ReturnsResponseWithEmptyList() {
+    public void GetAllUsers_InvalidRole_ThrowsException()
+    {
+        //arrange
 
-        when(userRepository.findAll()).thenReturn(Collections.emptyList());
+        //act and assert
+        when(requestAccessToken.hasRole("admin")).thenReturn(false);
 
+        //has to throw UnauthorizedDataAccessException
+        UnauthorizedDataAccessException exception = assertThrows(UnauthorizedDataAccessException.class, () -> {
+            getAllUsersUseCase.getAllUsers(); // This should throw the exception
+        });
 
-        GetAllUsersResponse response = getAllUsersUseCase.getAllUsers();
-
-
-        assertNotNull(response);
-        assertTrue(response.getUsers().isEmpty());
-
-
-        verify(userRepository, times(1)).findAll();
     }
 
 }
