@@ -43,11 +43,20 @@ public class WebSecurityConfig
     }
 
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
+    public WebMvcConfigurer corsConfigurer()
+    {
+        return new WebMvcConfigurer()
+        {
             @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("http://localhost:5173");
+            public void addCorsMappings(CorsRegistry registry)
+            {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:5173")
+                        .allowedMethods("*")
+                        .allowedHeaders("*")
+                        .maxAge(3600); // Max age of the preflight request in seconds
+
+
             }
         };
     }

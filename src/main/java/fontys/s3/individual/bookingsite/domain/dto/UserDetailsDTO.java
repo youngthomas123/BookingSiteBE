@@ -21,5 +21,6 @@ public class UserDetailsDTO
     private String bio;
     private String phoneNumber;
     private String email;
+    private String profilePicUrl;
 
 }

@@ -59,5 +59,8 @@ public class UserEntity
     @Length(max = 10)
     private String type;
 
+    @Column(name = "profile_pic")
+    private String profilePic;
+
 
 }

@@ -36,6 +36,7 @@ public class GetUserByIdUseCaseImp implements GetUserByIdUseCase {
                         .email(user.getEmail())
                         .bio(user.getBio())
                         .phoneNumber(user.getPhoneNumber())
+                        .profilePicUrl(user.getProfilePic())
                         .build();
 
                 return Optional.of(userDetailsDTO);

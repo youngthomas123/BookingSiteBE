@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -22,6 +23,11 @@ public interface PropertyRepository extends JpaRepository<PropertyEntity,Long>
             "OR (check_out BETWEEN :checkin AND :checkout)) " +
             "AND location LIKE %:location%", nativeQuery = true)
     Page<PropertyEntity> findPaginatedByLocationAndAvailability(String location,String checkin, String checkout, Pageable pageable);
+
+    List<PropertyEntity> findByUserEntityId(Long userId);
+
+
+
 
 
 

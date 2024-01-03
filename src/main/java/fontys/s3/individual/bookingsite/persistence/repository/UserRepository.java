@@ -10,5 +10,12 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>
 
     UserEntity findByUsername(String username);
 
+    @Query(value = "select profile_pic " +
+            "from users " + // Added space after 'users'
+            "where id = :id", nativeQuery = true)
+    String findProfilePicById(long id);
+
+
+
 
 }

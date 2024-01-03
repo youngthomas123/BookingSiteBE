@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -58,13 +59,41 @@ public class UserController
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<UpdateUserResponse>updateUserById(
-            @PathVariable(value = "id") final long id,
-            @RequestBody @Valid UpdateUserRequest request)
-    {
-        UpdateUserResponse response = updateUserByIdUseCase.updateUser(request, id);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
+//    @PutMapping("{id}")
+//    public ResponseEntity<UpdateUserResponse>updateUserById(
+//            @PathVariable(value = "id") final long id,
+//            @RequestBody @Valid UpdateUserRequest request)
+//    {
+//        UpdateUserResponse response = updateUserByIdUseCase.updateUser(request, id);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+//
+//    }
+
+
+    @PutMapping(value = "{id}", consumes = "multipart/form-data")
+    public ResponseEntity<UpdateUserResponse> updateUserById(
+            @PathVariable("id") long id,
+            @RequestParam("phoneNumber") String phoneNumber,
+            @RequestParam("email") String email,
+            @RequestParam("bio") String bio,
+            @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {
+
+        UpdateUserRequest request = UpdateUserRequest.builder()
+                .phoneNumber(phoneNumber)
+                .email(email)
+                .bio(bio)
+                .build();
+
+        if (imageFile != null)
+        {
+            request.setProfilePic(imageFile);
+        }
+
+        UpdateUserResponse response = updateUserByIdUseCase.updateUser(request, id);
+
+
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
