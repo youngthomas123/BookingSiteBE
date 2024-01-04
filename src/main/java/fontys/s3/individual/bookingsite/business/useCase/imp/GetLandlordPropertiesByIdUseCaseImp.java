@@ -7,10 +7,13 @@ import fontys.s3.individual.bookingsite.domain.dto.DisplayLandlordPropertyDTO;
 import fontys.s3.individual.bookingsite.domain.dto.UserDetailsDTO;
 import fontys.s3.individual.bookingsite.domain.response.GetLandlordPropertiesByIdResponse;
 import fontys.s3.individual.bookingsite.persistence.entity.PropertyEntity;
+import fontys.s3.individual.bookingsite.persistence.repository.BookingRepository;
 import fontys.s3.individual.bookingsite.persistence.repository.PropertyRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +23,7 @@ public class GetLandlordPropertiesByIdUseCaseImp implements GetLandlordPropertie
 {
     private PropertyRepository propertyRepository;
     private AccessToken requestAccessToken;
+    private BookingRepository bookingRepository;
 
     @Override
     public GetLandlordPropertiesByIdResponse getProperties(long id)
@@ -32,10 +36,19 @@ public class GetLandlordPropertiesByIdUseCaseImp implements GetLandlordPropertie
             // create list of dtos
             //create and return response
             List<PropertyEntity> properties = propertyRepository.findByUserEntityId(id);
+
+            LocalDate today = LocalDate.now();
+
+
+            boolean outstandingBooking = bookingRepository.existsBookingsAfterToday(today);
+
             List<DisplayLandlordPropertyDTO> propertyDtos = properties.stream()
                     .map(property -> DisplayLandlordPropertyDTO.builder()
+                            .id(property.getId())
                             .propertyName(property.getName())
                             .mainPhoto(property.getMainPhoto())
+                            .enlisted(property.isEnlisted())
+                            .outstandingBooking(outstandingBooking)
                             .build())
                     .toList();
 

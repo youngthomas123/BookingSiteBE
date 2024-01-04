@@ -40,6 +40,8 @@ public class PropertyEntity
 
     private String mainPhoto;
 
+    private boolean isEnlisted;
+
 
 
 }

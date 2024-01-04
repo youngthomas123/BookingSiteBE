@@ -11,7 +11,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DisplayLandlordPropertyDTO
 {
+    private long id;
     private String propertyName;
     private String mainPhoto;
+    private boolean enlisted;
+    private boolean outstandingBooking;
 
 }

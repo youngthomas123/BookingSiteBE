@@ -1,6 +1,7 @@
 package fontys.s3.individual.bookingsite.business.useCase.imp;
 
 import fontys.s3.individual.bookingsite.business.exception.ItemNotFoundException;
+import fontys.s3.individual.bookingsite.business.exception.UnauthorizedDataAccessException;
 import fontys.s3.individual.bookingsite.business.useCase.GetPropertyByIdUseCase;
 import fontys.s3.individual.bookingsite.domain.dto.PropertyPageDTO;
 import fontys.s3.individual.bookingsite.domain.response.GetPropertyByIdResponse;
@@ -33,27 +34,35 @@ public class GetPropertyByIdUseCaseImp implements GetPropertyByIdUseCase
        if(propertyEntity.isPresent())
        {
            PropertyEntity property = propertyEntity.get();
-           List<PropertyPictureEntity> propertyPictureEntities = propertyPictureRepository.findByPropertyEntityId(property.getId());
+           if(property.isEnlisted())
+           {
+               List<PropertyPictureEntity> propertyPictureEntities = propertyPictureRepository.findByPropertyEntityId(property.getId());
 
-           List<String> otherPictures = propertyPictureEntities.stream()
-                   .map(PropertyPictureEntity::getPhoto)
-                   .toList();
+               List<String> otherPictures = propertyPictureEntities.stream()
+                       .map(PropertyPictureEntity::getPhoto)
+                       .toList();
 
-           PropertyPageDTO propertyPageDTO = PropertyPageDTO.builder()
-                   .propertyId(property.getId())
-                   .name(property.getName())
-                   .description(property.getDescription())
-                   .location(property.getLocation())
-                   .pricePerNight(property.getPricePerNight())
-                   .mainPhoto(property.getMainPhoto())
-                   .otherPhotos(otherPictures)
-                   .build();
+               PropertyPageDTO propertyPageDTO = PropertyPageDTO.builder()
+                       .propertyId(property.getId())
+                       .name(property.getName())
+                       .description(property.getDescription())
+                       .location(property.getLocation())
+                       .pricePerNight(property.getPricePerNight())
+                       .mainPhoto(property.getMainPhoto())
+                       .otherPhotos(otherPictures)
+                       .build();
 
-           GetPropertyByIdResponse response = GetPropertyByIdResponse.builder()
-                   .propertyPageDTO(propertyPageDTO)
-                   .build();
+               GetPropertyByIdResponse response = GetPropertyByIdResponse.builder()
+                       .propertyPageDTO(propertyPageDTO)
+                       .build();
 
-           return response;
+               return response;
+
+           }
+           else
+           {
+               throw new UnauthorizedDataAccessException("This property has been delisted or removed");
+           }
 
        }
        else

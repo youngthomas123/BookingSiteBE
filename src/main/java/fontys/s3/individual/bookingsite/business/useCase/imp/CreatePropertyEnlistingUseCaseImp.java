@@ -56,6 +56,7 @@ public class CreatePropertyEnlistingUseCaseImp implements CreatePropertyEnlistin
                         .location(request.getLocation())
                         .description(request.getDescription())
                         .userEntity(user)
+                        .isEnlisted(true)
                         .build();
 
                 PropertyEntity savedPropertyEntity = propertyRepository.save(propertyEntity);

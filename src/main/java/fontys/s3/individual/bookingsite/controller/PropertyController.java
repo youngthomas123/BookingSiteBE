@@ -1,15 +1,9 @@
 package fontys.s3.individual.bookingsite.controller;
 
-import fontys.s3.individual.bookingsite.business.useCase.CreatePropertyEnlistingUseCase;
-import fontys.s3.individual.bookingsite.business.useCase.GetLandlordPropertiesByIdUseCase;
-import fontys.s3.individual.bookingsite.business.useCase.GetPaginatedPropertiesUseCase;
-import fontys.s3.individual.bookingsite.business.useCase.GetPropertyByIdUseCase;
+import fontys.s3.individual.bookingsite.business.useCase.*;
 import fontys.s3.individual.bookingsite.domain.request.CreatePropertyEnlistingRequest;
 import fontys.s3.individual.bookingsite.domain.request.GetPaginatedPropertiesRequest;
-import fontys.s3.individual.bookingsite.domain.response.CreatePropertyEnlistingResponse;
-import fontys.s3.individual.bookingsite.domain.response.GetLandlordPropertiesByIdResponse;
-import fontys.s3.individual.bookingsite.domain.response.GetPaginatedPropertiesResponse;
-import fontys.s3.individual.bookingsite.domain.response.GetPropertyByIdResponse;
+import fontys.s3.individual.bookingsite.domain.response.*;
 import jakarta.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,6 +24,7 @@ public class  PropertyController
     private final CreatePropertyEnlistingUseCase createPropertyEnlistingUseCase;
     private final GetPropertyByIdUseCase getPropertyByIdUseCase;
     private final GetLandlordPropertiesByIdUseCase getLandlordPropertiesByIdUseCase;
+    private final UpdatePropertyStatusUseCase updatePropertyStatusUseCase;
     
 
 
@@ -99,6 +94,17 @@ public class  PropertyController
         GetLandlordPropertiesByIdResponse response = getLandlordPropertiesByIdUseCase.getProperties(landlordId);
         return ResponseEntity.ok().body(response);
     }
+
+    @RolesAllowed({"landlord"})
+    @PutMapping(value = "{propertyId}")
+    public ResponseEntity <UpdatePropertyStatusResponse> updatePropertyStatus(
+            @PathVariable("propertyId") long propertyId,
+            @RequestParam ("status") String status)
+    {
+        UpdatePropertyStatusResponse response = updatePropertyStatusUseCase.updatePropertyStatus(propertyId, status);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
 
 
 
