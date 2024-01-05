@@ -14,5 +14,17 @@ public interface BookingRepository extends JpaRepository<BookingEntity,Long>
     @Query("SELECT CASE WHEN COUNT(b) > 0 THEN TRUE ELSE FALSE END FROM BookingEntity b WHERE b.checkIn > :today OR b.checkOut > :today")
     boolean existsBookingsAfterToday(@Param("today") LocalDate today);
 
+    @Query("SELECT CASE WHEN COUNT(b) > 0 THEN true ELSE false END " +
+            "FROM BookingEntity b " +
+            "WHERE b.propertyEntity.id = :propertyId " +
+            "AND (" +
+            "(b.checkIn BETWEEN :start AND :end) OR " +
+            "(b.checkOut BETWEEN :start AND :end) OR " +
+            "(b.checkIn <= :start AND b.checkOut >= :end)" +
+            ")")
+    boolean hasConflictingBookings(@Param("propertyId") Long propertyId,
+                                   @Param("start") LocalDate start,
+                                   @Param("end") LocalDate end);
+
 
 }

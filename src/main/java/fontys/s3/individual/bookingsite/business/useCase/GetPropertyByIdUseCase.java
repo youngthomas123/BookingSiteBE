@@ -5,6 +5,6 @@ import fontys.s3.individual.bookingsite.domain.response.GetPropertyByIdResponse;
 
 public interface GetPropertyByIdUseCase
 {
-    GetPropertyByIdResponse getPropertyById(long id);
+    GetPropertyByIdResponse getPropertyById(long id, String checkin, String checkout);
 
 }

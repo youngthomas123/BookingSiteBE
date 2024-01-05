@@ -81,9 +81,13 @@ public class  PropertyController
 
 
     @GetMapping("{id}")
-    public ResponseEntity<GetPropertyByIdResponse>getPropertyById(@PathVariable(value = "id") final long id)
+    public ResponseEntity<GetPropertyByIdResponse>getPropertyById(
+             @PathVariable(value = "id") final long id,
+             @RequestParam("checkin") String checkin,
+             @RequestParam("checkout") String checkout
+            )
     {
-        GetPropertyByIdResponse response = getPropertyByIdUseCase.getPropertyById(id);
+        GetPropertyByIdResponse response = getPropertyByIdUseCase.getPropertyById(id, checkin, checkout);
         return ResponseEntity.ok().body(response);
     }
 

@@ -20,4 +20,5 @@ public class PropertyPageDTO
     private double pricePerNight;
     private String mainPhoto;
     private List<String> otherPhotos;
+    private boolean hasConflictingBookings;
 }

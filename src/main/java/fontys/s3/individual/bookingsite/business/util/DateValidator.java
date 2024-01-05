@@ -10,24 +10,42 @@ public class DateValidator
     String format = "yyyy-MM-dd";
     public  boolean areDatesValid(String checkin, String checkout)
     {
-        try
+        if (checkin != null && !checkin.trim().isEmpty() && checkout != null && !checkout.trim().isEmpty())
         {
-            // Define the date format expected in the string
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+            try
+            {
+                // Define the date format expected in the string
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 
-            // Parse the string into a LocalDate using the defined format
-            LocalDate checkIn = LocalDate.parse(checkin, formatter);
-            LocalDate checkOut = LocalDate.parse(checkout, formatter);
+                // Parse the string into a LocalDate using the defined format
+                LocalDate checkIn = LocalDate.parse(checkin, formatter);
+                LocalDate checkOut = LocalDate.parse(checkout, formatter);
 
-            return checkIn.isBefore(checkOut);
+                return checkIn.isBefore(checkOut);
+
+            }
+            catch (DateTimeParseException e)
+            {
+                // If parsing fails, handle the exception or simply return false
+                return false;
+            }
 
         }
-        catch (DateTimeParseException e)
+        else
         {
-            // If parsing fails, handle the exception or simply return false
             return false;
         }
+
     }
+    public LocalDate convertToLocalDateObj(String date)
+    {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        LocalDate formattedDate = LocalDate.parse(date, formatter);
+        return formattedDate;
+
+
+    }
+
 
 
 
