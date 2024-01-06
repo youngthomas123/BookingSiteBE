@@ -32,6 +32,7 @@ public interface PropertyRepository extends JpaRepository<PropertyEntity,Long>
 
     List<PropertyEntity> findByUserEntityId(Long userId);
 
+    //to check if landlord actually owns the property
     Optional<PropertyEntity> findByIdAndUserEntity(Long propertyId, UserEntity userEntity);
 
 
