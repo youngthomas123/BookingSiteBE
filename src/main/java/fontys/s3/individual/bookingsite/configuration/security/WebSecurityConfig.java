@@ -36,6 +36,7 @@ public class WebSecurityConfig
                         registry.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()                 // CORS pre-flight requests should be public
                                 .requestMatchers(HttpMethod.POST, "/users", "/login").permitAll() // Creating a student and login are public
                                 .anyRequest().authenticated()                                             // Everything else --> authentication required, which is Spring security's default behaviour
+
                 )
                 .exceptionHandling(configure -> configure.authenticationEntryPoint(authenticationEntryPoint))
                 .addFilterBefore(authenticationRequestFilter, UsernamePasswordAuthenticationFilter.class);
