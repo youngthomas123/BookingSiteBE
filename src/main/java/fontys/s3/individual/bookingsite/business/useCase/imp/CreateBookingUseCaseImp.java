@@ -64,8 +64,11 @@ public class CreateBookingUseCaseImp implements CreateBookingUseCase
 
                        BookingEntity savedBookingEntity =  bookingRepository.save(bookingEntity);
 
+
+
                        CreateBookingResponse response = CreateBookingResponse.builder()
                                .bookingId(savedBookingEntity.getId())
+                               .landlordName(propertyEntity.get().getUserEntity().getUsername())
                                .build();
 
                        return response;

@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class CreateBookingResponse
 {
     private long bookingId;
+    private String landlordName;
 }

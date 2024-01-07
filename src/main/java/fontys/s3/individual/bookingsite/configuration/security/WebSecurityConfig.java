@@ -12,8 +12,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.Header;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import static org.springframework.security.config.http.MatcherType.mvc;
+
 
 @EnableWebSecurity
 @EnableMethodSecurity(jsr250Enabled = true)
@@ -34,7 +38,8 @@ public class WebSecurityConfig
                         configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(registry ->
                         registry.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()                 // CORS pre-flight requests should be public
-                                .requestMatchers(HttpMethod.POST, "/users", "/login").permitAll() // Creating a student and login are public
+                                .requestMatchers(HttpMethod.POST, "/users", "/login" ).permitAll() // Creating a student and login are public
+                                .requestMatchers(HttpMethod.GET, "/ws/**").permitAll()
                                 .anyRequest().authenticated()                                             // Everything else --> authentication required, which is Spring security's default behaviour
 
                 )
@@ -55,11 +60,15 @@ public class WebSecurityConfig
                         .allowedOrigins("http://localhost:5173")
                         .allowedMethods("*")
                         .allowedHeaders("*")
-                        .maxAge(3600); // Max age of the preflight request in seconds
+                        .maxAge(4600); // Max age of the preflight request in seconds
 
 
             }
         };
     }
+
+
+
+
 
 }
