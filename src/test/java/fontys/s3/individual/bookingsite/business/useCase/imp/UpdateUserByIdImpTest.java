@@ -32,7 +32,7 @@ class UpdateUserByIdImpTest
     private UpdateUserByIdImp updateUserByIdImp;
 
     @Test
-    public void updateUser_ValidUserIdAndUserIsPresentInDB_ReturnsResponse()
+    public void updateUser_ValidUserIdAndUserIsPresentInDB_NoProfilePicProvided_ReturnsResponse()
     {
         long id = 1L;
         UpdateUserRequest request = UpdateUserRequest.builder()

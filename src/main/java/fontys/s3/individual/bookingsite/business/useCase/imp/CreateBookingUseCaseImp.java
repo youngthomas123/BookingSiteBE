@@ -6,6 +6,7 @@ import fontys.s3.individual.bookingsite.business.exception.UnauthorizedDataAcces
 import fontys.s3.individual.bookingsite.business.exception.UserNotFoundException;
 import fontys.s3.individual.bookingsite.business.useCase.CreateBookingUseCase;
 import fontys.s3.individual.bookingsite.business.util.DateValidator;
+import fontys.s3.individual.bookingsite.business.util.EmailHelper;
 import fontys.s3.individual.bookingsite.configuration.security.token.AccessToken;
 import fontys.s3.individual.bookingsite.domain.request.CreateBookingRequest;
 import fontys.s3.individual.bookingsite.domain.response.CreateBookingResponse;
@@ -15,6 +16,7 @@ import fontys.s3.individual.bookingsite.persistence.entity.UserEntity;
 import fontys.s3.individual.bookingsite.persistence.repository.BookingRepository;
 import fontys.s3.individual.bookingsite.persistence.repository.PropertyRepository;
 import fontys.s3.individual.bookingsite.persistence.repository.UserRepository;
+import jakarta.mail.MessagingException;
 import jakarta.persistence.Access;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ public class CreateBookingUseCaseImp implements CreateBookingUseCase
     private UserRepository userRepository;
     private AccessToken accessToken;
     private DateValidator dateValidator;
+    private EmailHelper emailHelper;
     @Override
     public CreateBookingResponse createBooking(CreateBookingRequest request)
     {
@@ -71,8 +74,15 @@ public class CreateBookingUseCaseImp implements CreateBookingUseCase
                                .landlordName(propertyEntity.get().getUserEntity().getUsername())
                                .build();
 
-                       return response;
-
+                       try
+                       {
+                           emailHelper.sendBookingConfirmationEmail(user.getEmail(), bookingEntity, propertyEntity.get());
+                           return response;
+                       }
+                       catch (MessagingException e)
+                       {
+                           throw new RuntimeException(e);
+                       }
                    }
                    else
                    {

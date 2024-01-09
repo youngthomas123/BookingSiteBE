@@ -11,8 +11,11 @@ import java.time.LocalDate;
 @Repository
 public interface BookingRepository extends JpaRepository<BookingEntity,Long>
 {
-    @Query("SELECT CASE WHEN COUNT(b) > 0 THEN TRUE ELSE FALSE END FROM BookingEntity b WHERE b.checkIn > :today OR b.checkOut > :today")
-    boolean existsBookingsAfterToday(@Param("today") LocalDate today);
+
+
+    @Query("SELECT CASE WHEN COUNT(b) > 0 THEN TRUE ELSE FALSE END FROM BookingEntity b WHERE b.propertyEntity.id = :propertyId AND (b.checkIn > :today OR b.checkOut > :today)")
+    boolean existsBookingsAfterTodayForProperty(@Param("propertyId") long propertyId, @Param("today") LocalDate today);
+
 
     @Query("SELECT CASE WHEN COUNT(b) > 0 THEN true ELSE false END " +
             "FROM BookingEntity b " +
@@ -25,6 +28,9 @@ public interface BookingRepository extends JpaRepository<BookingEntity,Long>
     boolean hasConflictingBookings(@Param("propertyId") Long propertyId,
                                    @Param("start") LocalDate start,
                                    @Param("end") LocalDate end);
+
+
+    void deleteAllByPropertyEntityId(long propertyId);
 
 
 }

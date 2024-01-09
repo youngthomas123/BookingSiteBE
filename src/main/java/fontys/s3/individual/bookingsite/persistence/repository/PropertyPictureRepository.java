@@ -9,4 +9,6 @@ public interface PropertyPictureRepository extends JpaRepository<PropertyPicture
 {
     List<PropertyPictureEntity> findByPropertyEntityId(Long propertyId);
 
+    void deleteAllByPropertyEntityId(long propertyId);
+
 }

@@ -28,6 +28,8 @@ public class GetPropertyByIdUseCaseImp implements GetPropertyByIdUseCase
     private BookingRepository bookingRepository;
     private DateValidator dateValidator;
 
+
+
     @Override
     public GetPropertyByIdResponse getPropertyById(long id, String checkin, String checkout)
     {

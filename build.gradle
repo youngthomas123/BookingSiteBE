@@ -71,6 +71,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
+    //h2 database
+    testImplementation 'com.h2database:h2:2.2.224'
+
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+
 
 
 

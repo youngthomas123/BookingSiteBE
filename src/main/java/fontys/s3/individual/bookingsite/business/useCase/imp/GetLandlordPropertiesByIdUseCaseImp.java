@@ -40,7 +40,6 @@ public class GetLandlordPropertiesByIdUseCaseImp implements GetLandlordPropertie
             LocalDate today = LocalDate.now();
 
 
-            boolean outstandingBooking = bookingRepository.existsBookingsAfterToday(today);
 
             List<DisplayLandlordPropertyDTO> propertyDtos = properties.stream()
                     .map(property -> DisplayLandlordPropertyDTO.builder()
@@ -48,7 +47,7 @@ public class GetLandlordPropertiesByIdUseCaseImp implements GetLandlordPropertie
                             .propertyName(property.getName())
                             .mainPhoto(property.getMainPhoto())
                             .enlisted(property.isEnlisted())
-                            .outstandingBooking(outstandingBooking)
+                            .outstandingBooking(bookingRepository.existsBookingsAfterTodayForProperty(property.getId(), today))
                             .build())
                     .toList();
 

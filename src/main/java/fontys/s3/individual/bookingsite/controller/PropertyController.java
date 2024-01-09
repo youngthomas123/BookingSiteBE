@@ -25,6 +25,7 @@ public class  PropertyController
     private final GetPropertyByIdUseCase getPropertyByIdUseCase;
     private final GetLandlordPropertiesByIdUseCase getLandlordPropertiesByIdUseCase;
     private final UpdatePropertyStatusUseCase updatePropertyStatusUseCase;
+    private final DeletePropertyByIdUseCase deletePropertyByIdUseCase;
     
 
 
@@ -108,6 +109,17 @@ public class  PropertyController
         UpdatePropertyStatusResponse response = updatePropertyStatusUseCase.updatePropertyStatus(propertyId, status);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @RolesAllowed({"landlord"})
+    @DeleteMapping(value = "{propertyId}")
+    public ResponseEntity<Void>deleteProperty (@PathVariable("propertyId") long propertyId)
+    {
+        deletePropertyByIdUseCase.deletePropertyById(propertyId);
+        return ResponseEntity.noContent().build();
+
+    }
+
+
 
 
 
