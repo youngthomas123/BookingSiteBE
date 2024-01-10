@@ -42,12 +42,13 @@ public class CreatePropertyEnlistingUseCaseImp implements CreatePropertyEnlistin
         //response saves the PropertyId
         if(requestAccessToken.hasRole("landlord"))
         {
-            String mainPropertyPictureUrl = imageStorageHelper.saveMainPropertyPic(request.getMainPicture());
 
             Optional<UserEntity> userEntity = userRepository.findById(requestAccessToken.getUserId());
 
             if(userEntity.isPresent())
             {
+                String mainPropertyPictureUrl = imageStorageHelper.saveMainPropertyPic(request.getMainPicture());
+
                 UserEntity user = userEntity.get();
                 PropertyEntity propertyEntity = PropertyEntity.builder()
                         .mainPhoto(mainPropertyPictureUrl)

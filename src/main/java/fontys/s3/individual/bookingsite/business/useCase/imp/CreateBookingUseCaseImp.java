@@ -1,9 +1,6 @@
 package fontys.s3.individual.bookingsite.business.useCase.imp;
 
-import fontys.s3.individual.bookingsite.business.exception.BookingConflictException;
-import fontys.s3.individual.bookingsite.business.exception.InvalidDatesException;
-import fontys.s3.individual.bookingsite.business.exception.UnauthorizedDataAccessException;
-import fontys.s3.individual.bookingsite.business.exception.UserNotFoundException;
+import fontys.s3.individual.bookingsite.business.exception.*;
 import fontys.s3.individual.bookingsite.business.useCase.CreateBookingUseCase;
 import fontys.s3.individual.bookingsite.business.util.DateValidator;
 import fontys.s3.individual.bookingsite.business.util.EmailHelper;
@@ -17,7 +14,6 @@ import fontys.s3.individual.bookingsite.persistence.repository.BookingRepository
 import fontys.s3.individual.bookingsite.persistence.repository.PropertyRepository;
 import fontys.s3.individual.bookingsite.persistence.repository.UserRepository;
 import jakarta.mail.MessagingException;
-import jakarta.persistence.Access;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -81,7 +77,7 @@ public class CreateBookingUseCaseImp implements CreateBookingUseCase
                        }
                        catch (MessagingException e)
                        {
-                           throw new RuntimeException(e);
+                           throw new EmailException("Error creating email");
                        }
                    }
                    else

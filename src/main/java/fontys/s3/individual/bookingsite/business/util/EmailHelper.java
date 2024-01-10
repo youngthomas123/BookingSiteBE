@@ -11,11 +11,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
+
 public class EmailHelper
 {
 
-    private final JavaMailSender emailSender;
 
+    private final  JavaMailSender emailSender;
 
     @Async
     public void sendBookingConfirmationEmail(String recipientEmail, BookingEntity booking, PropertyEntity property)

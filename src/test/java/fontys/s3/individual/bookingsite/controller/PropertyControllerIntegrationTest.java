@@ -1,6 +1,5 @@
 package fontys.s3.individual.bookingsite.controller;
 
-import fontys.s3.individual.bookingsite.TestConfig.TestMailConfig;
 import fontys.s3.individual.bookingsite.business.exception.UnauthorizedDataAccessException;
 import fontys.s3.individual.bookingsite.business.useCase.GetPaginatedPropertiesUseCase;
 import fontys.s3.individual.bookingsite.domain.dto.PropertyHomePageDTO;
@@ -34,7 +33,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@Import(TestMailConfig.class)
+
 class PropertyControllerIntegrationTest
 {
     @Autowired
