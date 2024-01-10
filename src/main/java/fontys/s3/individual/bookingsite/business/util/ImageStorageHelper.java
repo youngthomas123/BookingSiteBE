@@ -75,6 +75,22 @@ public class ImageStorageHelper
 
     }
 
+    public void deleteMainPropertyPic(String oldUrl)
+    {
+        String imageUrl = "{\"imageUrl\": \"" + oldUrl + "\"}";
+
+
+        webClient.post()
+                .uri("http://localhost:3000/delete/MainPropertyPic")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(imageUrl)
+                .retrieve()
+                .toBodilessEntity()
+                .block(); // Blocking call to perform deletion (consider asynchronous handling)
+    }
+
+
+
     public List<String> saveOtherPropertyPhotos(List<MultipartFile> files)
     {
         // Prepare the multipart request with the image files
@@ -110,6 +126,28 @@ public class ImageStorageHelper
             return Collections.emptyList(); // or throw an exception
         }
     }
+
+    public void deleteOtherPropertyPhotos(List<String> oldUrls)
+    {
+        JsonObject jsonObject = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
+        oldUrls.forEach(jsonArray::add);
+
+        jsonObject.add("imageUrls", jsonArray);
+
+        String jsonPayload = jsonObject.toString();
+
+        // Use the JSON payload for the WebClient request
+        webClient.post()
+                .uri("http://localhost:3000/delete/PropertyPhoto")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(jsonPayload)
+                .retrieve()
+                .toBodilessEntity()
+                .block(); // Blocking call to perform deletion (consider asynchronous handling)
+    }
+
+
 
 
 

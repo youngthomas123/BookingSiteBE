@@ -5,8 +5,10 @@ import fontys.s3.individual.bookingsite.business.exception.ItemNotFoundException
 import fontys.s3.individual.bookingsite.business.exception.UnauthorizedDataAccessException;
 import fontys.s3.individual.bookingsite.business.exception.UserNotFoundException;
 import fontys.s3.individual.bookingsite.business.useCase.DeletePropertyByIdUseCase;
+import fontys.s3.individual.bookingsite.business.util.ImageStorageHelper;
 import fontys.s3.individual.bookingsite.configuration.security.token.AccessToken;
 import fontys.s3.individual.bookingsite.persistence.entity.PropertyEntity;
+import fontys.s3.individual.bookingsite.persistence.entity.PropertyPictureEntity;
 import fontys.s3.individual.bookingsite.persistence.entity.UserEntity;
 import fontys.s3.individual.bookingsite.persistence.repository.BookingRepository;
 import fontys.s3.individual.bookingsite.persistence.repository.PropertyPictureRepository;
@@ -17,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -28,6 +32,7 @@ public class DeletePropertyByIdUseCaseImp implements DeletePropertyByIdUseCase
     private PropertyRepository propertyRepository;
     private PropertyPictureRepository propertyPictureRepository;
     private AccessToken accessToken;
+    private ImageStorageHelper imageStorageHelper;
 
     @Override
     @Transactional
@@ -48,6 +53,15 @@ public class DeletePropertyByIdUseCaseImp implements DeletePropertyByIdUseCase
 
                     if(!bookingRepository.existsBookingsAfterTodayForProperty(propertyId, LocalDate.now()) && property.isEnlisted()==false)
                     {
+                        List<PropertyPictureEntity> propertyPictureEntityList= propertyPictureRepository.findByPropertyEntityId(propertyId);
+
+                        List<String> photoUrls = propertyPictureEntityList.stream()
+                                .map(PropertyPictureEntity::getPhoto)
+                                .toList();
+
+                        imageStorageHelper.deleteMainPropertyPic(property.getMainPhoto());
+                        imageStorageHelper.deleteOtherPropertyPhotos(photoUrls);
+
                         bookingRepository.deleteAllByPropertyEntityId(propertyId);
                         propertyPictureRepository.deleteAllByPropertyEntityId(propertyId);
                         propertyRepository.deleteById(propertyId);

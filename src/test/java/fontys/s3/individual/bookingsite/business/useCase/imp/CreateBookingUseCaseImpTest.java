@@ -5,6 +5,7 @@ import fontys.s3.individual.bookingsite.business.exception.InvalidDatesException
 import fontys.s3.individual.bookingsite.business.exception.UnauthorizedDataAccessException;
 import fontys.s3.individual.bookingsite.business.exception.UserNotFoundException;
 import fontys.s3.individual.bookingsite.business.util.DateValidator;
+import fontys.s3.individual.bookingsite.business.util.EmailHelper;
 import fontys.s3.individual.bookingsite.configuration.security.token.AccessToken;
 import fontys.s3.individual.bookingsite.domain.request.CreateBookingRequest;
 import fontys.s3.individual.bookingsite.domain.response.CreateBookingResponse;
@@ -46,6 +47,9 @@ class CreateBookingUseCaseImpTest
 
     @Mock
     private DateValidator dateValidator;
+
+    @Mock
+    private EmailHelper emailHelper;
 
     @InjectMocks
     private CreateBookingUseCaseImp createBookingUseCaseImp;

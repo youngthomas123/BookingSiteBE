@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class EmailHelper
 {
 
-    private JavaMailSender emailSender;
+    private final JavaMailSender emailSender;
 
 
     @Async

@@ -5,6 +5,7 @@ import fontys.s3.individual.bookingsite.business.exception.ItemNotFoundException
 import fontys.s3.individual.bookingsite.business.exception.UnauthorizedDataAccessException;
 import fontys.s3.individual.bookingsite.business.useCase.GetPropertyByIdUseCase;
 import fontys.s3.individual.bookingsite.business.util.DateValidator;
+import fontys.s3.individual.bookingsite.business.util.ImageStorageHelper;
 import fontys.s3.individual.bookingsite.domain.dto.PropertyPageDTO;
 import fontys.s3.individual.bookingsite.domain.response.GetPropertyByIdResponse;
 import fontys.s3.individual.bookingsite.persistence.entity.PropertyEntity;
