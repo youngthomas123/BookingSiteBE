@@ -34,6 +34,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @SpringBootTest
 @AutoConfigureMockMvc
 
+
 class PropertyControllerIntegrationTest
 {
     @Autowired
