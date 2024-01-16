@@ -1,15 +1,13 @@
 package fontys.s3.individual.bookingsite.controller;
 
-import fontys.s3.individual.bookingsite.business.useCase.CreateUserUseCase;
-import fontys.s3.individual.bookingsite.business.useCase.GetAllUsersUseCase;
-import fontys.s3.individual.bookingsite.business.useCase.GetUserByIdUseCase;
-import fontys.s3.individual.bookingsite.business.useCase.UpdateUserByIdUseCase;
+import fontys.s3.individual.bookingsite.business.useCase.*;
 import fontys.s3.individual.bookingsite.domain.dto.UserDetailsDTO;
 import fontys.s3.individual.bookingsite.domain.request.CreateUserRequest;
 import fontys.s3.individual.bookingsite.domain.request.UpdateUserRequest;
 import fontys.s3.individual.bookingsite.domain.response.CreateUserResponse;
 import fontys.s3.individual.bookingsite.domain.response.GetAllUsersResponse;
 import fontys.s3.individual.bookingsite.domain.response.UpdateUserResponse;
+import fontys.s3.individual.bookingsite.domain.response.UpdateUserStatusResponse;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -30,6 +28,7 @@ public class UserController
     private final GetUserByIdUseCase getUserByIdUseCase;
     private final CreateUserUseCase createUserUseCase;
     private final UpdateUserByIdUseCase updateUserByIdUseCase;
+    private final UpdateUserStatusUseCase updateUserStatusUseCase;
 
     @RolesAllowed({"admin",})
     @GetMapping
@@ -60,15 +59,7 @@ public class UserController
     }
 
 
-//    @PutMapping("{id}")
-//    public ResponseEntity<UpdateUserResponse>updateUserById(
-//            @PathVariable(value = "id") final long id,
-//            @RequestBody @Valid UpdateUserRequest request)
-//    {
-//        UpdateUserResponse response = updateUserByIdUseCase.updateUser(request, id);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-//
-//    }
+
 
 
     @PutMapping(value = "{id}", consumes = "multipart/form-data")
@@ -96,4 +87,18 @@ public class UserController
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+
+    @RolesAllowed({"admin"})
+    @PutMapping("/timeout/{userId}")
+    public ResponseEntity<UpdateUserStatusResponse>updateUserStatus(
+            @PathVariable("userId") long userId,
+            @RequestParam ("status") String status)
+    {
+        UpdateUserStatusResponse response = updateUserStatusUseCase.updateUserStatus(userId, status);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+
+
 }

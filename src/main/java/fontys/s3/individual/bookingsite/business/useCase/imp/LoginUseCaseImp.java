@@ -1,6 +1,7 @@
 package fontys.s3.individual.bookingsite.business.useCase.imp;
 
 import fontys.s3.individual.bookingsite.business.exception.InvalidCredentialsException;
+import fontys.s3.individual.bookingsite.business.exception.UserNotFoundException;
 import fontys.s3.individual.bookingsite.business.useCase.LoginUseCase;
 import fontys.s3.individual.bookingsite.configuration.security.token.AccessTokenEncoder;
 import fontys.s3.individual.bookingsite.configuration.security.token.impl.AccessTokenImpl;
@@ -36,6 +37,11 @@ public class LoginUseCaseImp implements LoginUseCase
         if (!matchesPassword(loginRequest.getPassword(), user.getPassword()))
         {
             throw new InvalidCredentialsException();
+        }
+
+        if(user.isBanned())
+        {
+            throw new UserNotFoundException("This user is banned");
         }
 
         String accessToken = generateAccessToken(user);

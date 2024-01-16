@@ -6,13 +6,13 @@ import fontys.s3.individual.bookingsite.business.useCase.GetPaginatedPropertiesU
 import fontys.s3.individual.bookingsite.business.util.DateValidator;
 import fontys.s3.individual.bookingsite.configuration.security.token.AccessToken;
 import fontys.s3.individual.bookingsite.domain.dto.PropertyHomePageDTO;
-import fontys.s3.individual.bookingsite.domain.dto.UserDetailsDTO;
 import fontys.s3.individual.bookingsite.domain.request.GetPaginatedPropertiesRequest;
 import fontys.s3.individual.bookingsite.domain.response.GetPaginatedPropertiesResponse;
 import fontys.s3.individual.bookingsite.persistence.entity.PropertyEntity;
 import fontys.s3.individual.bookingsite.persistence.repository.PropertyRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -45,8 +45,10 @@ public class GetPaginatedPropertiesUseCaseImp implements GetPaginatedPropertiesU
             {
                 PageRequest pageRequest = PageRequest.of(request.getCurrentPage(), request.getPageSize());
 
+                LocalDate CheckIN = dateValidator.convertToLocalDateObj(request.getCheckIn());
+                LocalDate CheckOut = dateValidator.convertToLocalDateObj(request.getCheckOut());
                 Page<PropertyEntity> propertyEntities = propertyRepository.findPaginatedByLocationAndAvailability(
-                        request.getLocation(), request.getCheckIn(), request.getCheckOut(), pageRequest);
+                        request.getLocation(), CheckIN, CheckOut, pageRequest);
 
                 // Convert Page<> to List<>
                 List<PropertyEntity> propertiesList = propertyEntities.getContent();

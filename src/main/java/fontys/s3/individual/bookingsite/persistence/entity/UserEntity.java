@@ -36,7 +36,7 @@ public class UserEntity
     private String password;
 
     @Column(name = "email")
-    @Length(min = 2, max = 30)
+    @Length(min = 2, max = 40)
     @Email
     private String email;
 
@@ -61,6 +61,9 @@ public class UserEntity
 
     @Column(name = "profile_pic")
     private String profilePic;
+
+
+    private boolean isBanned;
 
 
 }

@@ -44,7 +44,7 @@ public class CreateBookingUseCaseImp implements CreateBookingUseCase
            {
                Optional<UserEntity> userEntity = userRepository.findById(accessToken.getUserId());
 
-               if(userEntity.isPresent())
+               if(userEntity.isPresent() && userEntity.get().isBanned() == false)
                {
                    UserEntity user = userEntity.get();
                    Optional<PropertyEntity> propertyEntity = propertyRepository.findById(request.getPropertyId());
@@ -89,7 +89,7 @@ public class CreateBookingUseCaseImp implements CreateBookingUseCase
                }
                else
                {
-                   throw new UserNotFoundException("The Tenant was not found in DB");
+                   throw new UserNotFoundException("The Tenant was not found in DB or was banned");
                }
            }
            else

@@ -29,9 +29,13 @@ public class GetAllUsersUseCaseImp implements GetAllUsersUseCase
 
             List<UserDetailsDTO> userDtos = users.stream()
                     .map(user -> UserDetailsDTO.builder()
+                            .userId(user.getId())
                             .username(user.getUsername())
                             .dateCreated(user.getDateCreated())
                             .type(user.getType())
+                            .isBanned(user.isBanned())
+                            .profilePicUrl(user.getProfilePic())
+                            .dateCreated(user.getDateCreated())
                             .build())
                     .collect(Collectors.toList());
 

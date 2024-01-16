@@ -4,7 +4,6 @@ import fontys.s3.individual.bookingsite.business.exception.UnauthorizedDataAcces
 import fontys.s3.individual.bookingsite.business.useCase.GetLandlordPropertiesByIdUseCase;
 import fontys.s3.individual.bookingsite.configuration.security.token.AccessToken;
 import fontys.s3.individual.bookingsite.domain.dto.DisplayLandlordPropertyDTO;
-import fontys.s3.individual.bookingsite.domain.dto.UserDetailsDTO;
 import fontys.s3.individual.bookingsite.domain.response.GetLandlordPropertiesByIdResponse;
 import fontys.s3.individual.bookingsite.persistence.entity.PropertyEntity;
 import fontys.s3.individual.bookingsite.persistence.repository.BookingRepository;

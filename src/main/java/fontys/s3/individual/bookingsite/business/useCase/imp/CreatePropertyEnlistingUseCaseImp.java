@@ -45,7 +45,7 @@ public class CreatePropertyEnlistingUseCaseImp implements CreatePropertyEnlistin
 
             Optional<UserEntity> userEntity = userRepository.findById(requestAccessToken.getUserId());
 
-            if(userEntity.isPresent())
+            if(userEntity.isPresent() && userEntity.get().isBanned() == false)
             {
                 String mainPropertyPictureUrl = imageStorageHelper.saveMainPropertyPic(request.getMainPicture());
 
@@ -86,7 +86,7 @@ public class CreatePropertyEnlistingUseCaseImp implements CreatePropertyEnlistin
             }
             else
             {
-                throw new UserNotFoundException("The Landlord was not found in DB");
+                throw new UserNotFoundException("The Landlord was not found in DB or was banned");
             }
 
         }

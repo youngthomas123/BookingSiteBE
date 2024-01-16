@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 public class UserDetailsDTO
 {
+    private  long userId;
     private String username;
     private LocalDateTime dateCreated;
     private String type;
@@ -22,5 +23,7 @@ public class UserDetailsDTO
     private String phoneNumber;
     private String email;
     private String profilePicUrl;
+
+    private boolean isBanned;
 
 }

@@ -32,6 +32,7 @@ public class CreateUserUseCaseImp implements CreateUserUseCase
                     .username(request.getUsername())
                     .password(encodedPassword)
                     .type(request.getType())
+                    .isBanned(false)
                     .build();
 
 
