@@ -19,12 +19,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -140,7 +143,12 @@ class GetPaginatedPropertiesUseCaseImpTest
 
         when(dateValidator.areDatesValid(request.getCheckIn(), request.getCheckOut())).thenReturn(true);
         when(requestAccessToken.hasRole("tenant")).thenReturn(true);
-        when(propertyRepository.findPaginatedByLocationAndAvailability(request.getLocation(), request.getCheckIn(), request.getCheckOut(), pageRequest)).thenReturn(propertyEntities);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate checkin = LocalDate.parse(request.getCheckIn(), formatter);
+        LocalDate checkout = LocalDate.parse(request.getCheckOut(), formatter);
+        when(dateValidator.convertToLocalDateObj(request.getCheckIn())).thenReturn(checkin);
+        when(dateValidator.convertToLocalDateObj(request.getCheckOut())).thenReturn(checkout);
+        when(propertyRepository.findPaginatedByLocationAndAvailability(request.getLocation(), checkin,checkout , pageRequest)).thenReturn(propertyEntities);
 
         // act
         GetPaginatedPropertiesResponse actualResponse = getPaginatedPropertiesUseCaseImp.getPaginatedProperties(request);
