@@ -29,6 +29,7 @@ public class UserController
     private final CreateUserUseCase createUserUseCase;
     private final UpdateUserByIdUseCase updateUserByIdUseCase;
     private final UpdateUserStatusUseCase updateUserStatusUseCase;
+    private final SearchUserByUsernameUseCase searchUserByUsernameUseCase;
 
     @RolesAllowed({"admin",})
     @GetMapping
@@ -97,6 +98,15 @@ public class UserController
     {
         UpdateUserStatusResponse response = updateUserStatusUseCase.updateUserStatus(userId, status);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @RolesAllowed({"admin"})
+    @GetMapping("/search")
+    public ResponseEntity<GetAllUsersResponse>searchByUsername(
+            @RequestParam ("username") String username)
+    {
+        GetAllUsersResponse response = searchUserByUsernameUseCase.searchByUsername(username);
+        return ResponseEntity.ok(response);
     }
 
 
