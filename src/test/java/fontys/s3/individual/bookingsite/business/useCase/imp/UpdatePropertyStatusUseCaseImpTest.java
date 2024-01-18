@@ -1,5 +1,6 @@
 package fontys.s3.individual.bookingsite.business.useCase.imp;
 
+import fontys.s3.individual.bookingsite.business.exception.BadRequestException;
 import fontys.s3.individual.bookingsite.business.exception.ItemNotFoundException;
 import fontys.s3.individual.bookingsite.business.exception.UnauthorizedDataAccessException;
 import fontys.s3.individual.bookingsite.business.exception.UserNotFoundException;
@@ -154,6 +155,41 @@ class UpdatePropertyStatusUseCaseImpTest
 
 
     }
+
+    @Test
+    public void updatePropertyStatus_InvalidStatusInRequest_ThrowsException() {
+        // Arrange
+        when(requestAccessToken.hasRole("landlord")).thenReturn(true);
+
+        UserEntity userEntity = UserEntity.builder()
+                .id(1L)
+                .username("landlord")
+                .build();
+
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(userEntity));
+
+        PropertyEntity propertyEntity = PropertyEntity.builder()
+                .id(2L)
+                .name("property")
+                .isEnlisted(false)
+                .userEntity(userEntity)
+                .build();
+
+        when(propertyRepository.findByIdAndUserEntity(anyLong(), any(UserEntity.class))).thenReturn(Optional.of(propertyEntity));
+
+
+
+        // Act and Assert
+        BadRequestException exception = assertThrows(BadRequestException.class, () ->
+                updatePropertyStatusUseCaseImp.updatePropertyStatus(2L, "invalidStatus"));
+
+
+
+
+
+    }
+
+
 
 
 

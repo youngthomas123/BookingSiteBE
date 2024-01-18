@@ -2,6 +2,7 @@ package fontys.s3.individual.bookingsite.business.useCase.imp;
 
 import fontys.s3.individual.bookingsite.business.exception.InvalidCredentialsException;
 import fontys.s3.individual.bookingsite.business.exception.UnauthorizedDataAccessException;
+import fontys.s3.individual.bookingsite.business.exception.UserNotFoundException;
 import fontys.s3.individual.bookingsite.configuration.security.token.AccessTokenEncoder;
 import fontys.s3.individual.bookingsite.domain.request.LoginRequest;
 import fontys.s3.individual.bookingsite.domain.response.LoginResponse;
@@ -111,6 +112,32 @@ class LoginUseCaseImpTest
 
 
     }
+
+    @Test
+    public void login_UserIsBanned_ThrowsException()
+    {
+        LoginRequest request = LoginRequest.builder()
+                .username("thomas")
+                .password("password")
+                .build();
+
+        UserEntity user = UserEntity.builder()
+                .id(1L)
+                .username("thomas")
+                .password("$2a$12$3YisSUfkf7ctqc6MfOZQ6.ggVP0t4pIB0isLiPPDDC1tZOztPhOZy")
+                .type("landlord")
+                .isBanned(true)
+                .build();
+
+        when(userRepository.findByUsername(request.getUsername())).thenReturn(user);
+        when(passwordEncoder.matches(request.getPassword(),user.getPassword())).thenReturn(true);
+
+        //assert
+        UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> {
+            loginUseCaseImp.login(request); // This should throw the exception
+        });
+    }
+
 
 
 }
